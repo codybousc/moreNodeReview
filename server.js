@@ -5,6 +5,8 @@ var morgan = require('morgan');
 var mongoose = require('mongoose');
 var port = process.env.PORT || 8080
 var User = require('./app/models/user');
+var jwt = require('jsonwebtoken');
+var superSecret = 'ilovescotchscotchyscotch';
 
 //App Configuration
 //body parser allows access to POST request content
@@ -36,6 +38,53 @@ app.get('/', function(req, res) {
 
 //get an instance of the express router
 var apiRouter = express.Router();
+
+//Authentication Route
+//===========================================
+apiRouter.post('/authenticate', function(req, res) {
+
+    //find the user
+    //selec the name, username and password explicitly
+    User.findOne({
+      username: req.body.username
+    }).select('name username password').exec(function(err, user) {
+        if(err) throw err;
+
+        //no user with that username was found
+        if(!user) {
+          res.json({
+            success: false,
+            message: 'No bueno'
+          });
+        }
+        else if (user) {
+          //check if password matches
+          var validPassword = user.comparePassword(req.body.password);
+          if(!validPassword) {
+            res.json({
+              success: false,
+              message: 'Authentication failed. Password is no bueno'
+            });
+          }
+          else {
+            //if user is found and password is right, create a token
+            var token = jwt.sign({
+                name: user.name,
+                username: user.username
+            }, superSecret, {
+               expiresInMinutes: 1440 //expires in 24 hours
+            });
+
+            //return the information including token as JSON
+            res.json({
+              success: true,
+              message: 'Enjoy your token!',
+              token: token
+            });
+          }
+        }
+    });
+});
 
 //MIDDLEWARE used for all requests
 //===========================================

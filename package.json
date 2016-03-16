@@ -4,11 +4,12 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "morgan": "~1.5.0",
-    "express": "~4.10.3",
+    "bcrypt-node.js": "0.0.3",
     "body-parser": "~1.9.3",
+    "express": "~4.10.3",
+    "jsonwebtoken": "^5.7.0",
     "mongoose": "~3.8.19",
-    "bcrypt-node.js": "0.0.3"
+    "morgan": "~1.5.0"
   },
   "devDependencies": {},
   "scripts": {
