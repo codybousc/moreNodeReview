@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
 var port = process.env.PORT || 8080
+var User = require('./app/models/user');
 
 //App Configuration
 //body parser allows access to POST request content
@@ -22,6 +23,10 @@ app.use(function(req, res, next) {
 //log all requests to the console
 app.use(morgan('dev'));
 
+//connect to database
+mongoose.connect('mongodb://testUser:testPass@ds015889.mlab.com:15889/testin_some_stuff')
+
+
 //Routes For API
 
 //basic route for home page
@@ -32,6 +37,14 @@ app.get('/', function(req, res) {
 //get an instance of the express router
 var apiRouter = express.Router();
 
+//MIDDLEWARE used for all requests
+//===========================================
+apiRouter.use(function(req, res, next) {
+  //do logging
+  console.log('Somebody just came to our app!');
+  next();
+});
+
 //test route to make sure all is working properly
 apiRouter.get('/', function(req, res) {
   res.json({message: 'hooray! welcome to our api!'});
@@ -40,8 +53,18 @@ apiRouter.get('/', function(req, res) {
 //more routes here
 //=============================================================
 
+apiRouter.route('/users')
+
+    //create a user
+    .post(function(req, res) {
+      var user = new User();
+      user.name = req.body.name;
+      user.username = req.body.username;
+      user.password = req.body.password;
+    })
 
 //register routes
+//=============================================================
 //all routes to be prefixed with /api
 app.use('/api', apiRouter);
 
