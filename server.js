@@ -123,13 +123,14 @@ apiRouter.route('/users')
 
         //delete specified user
         .delete(function(req, res) {
-          User.remove({
-              id: req.params.user_id
-          }, function(err, user) {
-                if(err) return res.send(err);
+          console.log("Deleting User: ", req.params.user_id);
+            User.remove({
+                _id: req.params.user_id
+            }, function(err, user) {
+                  if(err) return res.send(err);
 
-                res.json({ message: 'Successfully Deleted!'})
-          });
+                  res.json({ message: 'Successfully Deleted!'});
+            });
         });
 
 //register routes
