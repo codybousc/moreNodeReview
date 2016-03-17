@@ -209,6 +209,10 @@ apiRouter.route('/users')
                   res.json({ message: 'Successfully Deleted!'});
             });
         });
+//returns user info (username + iat + exp)
+  apiRouter.get('/me', function(req, res) {
+    res.send(req.decoded);
+  });
 
 //register routes
 //=============================================================
